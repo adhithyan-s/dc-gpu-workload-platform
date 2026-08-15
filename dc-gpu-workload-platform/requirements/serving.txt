@@ -1,0 +1,4 @@
+-r base.txt
+fastapi==0.111.1
+uvicorn==0.30.3
+mangum==0.17.0
