@@ -30,6 +30,5 @@ Decisions that trade off some "real-time-ness" for cost will be noted here as th
 
 ## Open questions / next decisions
 
-- Exact S3 bucket / prefix layout (next step)
 - Kinesis vs. scheduled Lambda for the replay producer
 - Orchestration: local Airflow (Docker) vs. lighter-weight scheduler

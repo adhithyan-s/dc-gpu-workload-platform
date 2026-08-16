@@ -47,6 +47,7 @@ Full architecture notes: see `docs/architecture.md`.
 | `ml/` | Feature engineering, model training, evaluation |
 | `serving/` | Inference API (FastAPI) and Lambda packaging |
 | `dashboard/` | User-facing front end |
+| `common/` | Shared code (e.g. `s3_paths.py`) used across ingestion/pipeline/ml |
 | `infra/` | Terraform for AWS resources |
 | `data/` | Local data cache (gitignored - never commit raw data) |
 | `notebooks/` | Exploratory analysis, not production code |
@@ -56,7 +57,7 @@ Full architecture notes: see `docs/architecture.md`.
 ## Status / roadmap
 
 - [x] Repo scaffold
-- [ ] S3 data lake layout + bucket structure
+- [x] S3 data lake layout + bucket structure (see `docs/data_lake_layout.md`)
 - [ ] Trace downloader script
 - [ ] Replay producer (simulated streaming ingestion)
 - [ ] Raw -> curated transforms
