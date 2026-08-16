@@ -1,0 +1,4 @@
+# Copy to terraform.tfvars (gitignored) and fill in a real, globally-unique bucket name before running `terraform apply`.
+
+bucket_name = "dc-gpu-workload-<yourname-or-suffix>"
+aws_region = "eu-west-1"
