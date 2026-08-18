@@ -17,9 +17,9 @@ Alibaba GPU trace (static files)
 [ingestion/downloader]      -- one-time fetch of source files
         |
         v
-[ingestion/replay_producer] -- replays trace in timestamp order into
-        |                       Kinesis / scheduled Lambda, simulating
-        |                       a live telemetry feed
+[ingestion/replay_producer] -- replays trace in timestamp order,
+        |                       writing timestamped micro-batches
+        |                       straight to S3, simulating a live feed
         v
    S3 data lake (raw -> interim -> processed)
         |
