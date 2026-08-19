@@ -58,8 +58,8 @@ Full architecture notes: see `docs/architecture.md`.
 
 - [x] Repo scaffold
 - [x] S3 data lake layout + bucket structure (see `docs/data_lake_layout.md`)
-- [ ] Trace downloader script
-- [ ] Replay producer (simulated streaming ingestion)
+- [x] Trace downloader script
+- [x] Replay producer (simulated streaming ingestion)
 - [ ] Raw -> curated transforms
 - [ ] Feature engineering
 - [ ] Baseline forecasting model + MLflow tracking
