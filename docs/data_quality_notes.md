@@ -21,3 +21,7 @@ A `Succeeded` pod (it actually ran and completed) declaring zero memory. This is
 ## Everything else checked out clean
 
 No duplicate pod names, no `deletion_time` earlier than `creation_time`, no negative GPU fields, no non-positive `cpu_milli`, all `qos` and `pod_phase` values match the known set from Alibaba's docs. See `validate_pod_list.py` for the exact checks.
+
+## node_list: fully clean, no anomalies
+
+Unlike pod_list, `node_list` (1,523 rows) passed every check with zero exceptions - no duplicate node IDs, no non-positive capacity, no negative GPU counts. One relationship worth noting because the validator checks it directly (not as a warning, since it holds with zero exceptions): `model` is null exactly when `gpu == 0`, and filled in exactly when `gpu > 0`, across all 1,523 rows. See `validate_node_list.py`.
