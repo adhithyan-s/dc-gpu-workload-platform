@@ -112,7 +112,7 @@ def main() -> None:
         print(f"{name}: {len(dim_df)} rows -> {local_path}")
 
         if args.upload:
-            upload_to_curated(local_path, dim_df, args.bucket)
+            upload_to_curated(local_path, name, args.bucket)
 
     print("\nDone.")
 
