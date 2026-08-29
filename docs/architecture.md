@@ -42,6 +42,11 @@ Decisions that trade off some "real-time-ness" for cost will be noted here as th
 
 Decided - full design and rationale in `docs/data_lake_layout.md`. Summary: single bucket, prefix-partitioned by medallion zone (`raw/` -> `curated/` -> `features/`), with `raw/` and `curated/` further split into `dimensions/` (node topology, loaded once) vs `events/` (pod scheduling data, the actual replay stream). Partitioned by ingestion date (`dt=`), not trace-internal time, to mirror how a real streaming pipeline lands data. Provisioned via `infra/terraform/`.
 
+## Feature engineering: bucket size
+
+Decided - full experiment and reasoning in `docs/feature_engineering_notes.md`.
+Summary: 15-minute buckets, chosen using the sweep-line technique (`ml/features/resample_usage.py`) over the trace's dense activity window only. The bucket-size statistics (sparsity, variance, autocorrelation) turned out not to discriminate between candidates - the decision came down to practical criteria instead (realistic decision cadence, enough rows for train/val/test + lag features).
+
 ## Open questions / next decisions
 
 - Orchestration: local Airflow (Docker) vs. lighter-weight scheduler

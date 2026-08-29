@@ -44,3 +44,5 @@ infra/terraform/terraform.tfvars
 .DS_Store
 .idea/
 .vscode/
+
+/images
