@@ -16,6 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ml.features.lag_features import add_lag_features
 from ml.features.resample_usage import build_bucketed_series
 
 REPO_ROOT = Path(__file__).parents[2]
@@ -27,6 +28,9 @@ WINDOW_END = 12901761
 BUCKET_SECONDS = 900    # 15 minutes
 
 RESOURCE_COLUMNS = ["cpu_milli", "memory_mib", "gpu_milli"]
+
+# Chosen from gpu_milli's measured autocorrelation curve (see docs/feature_engineering_notes.md): 15min, 1hr, 2hr, 4hr, 24hr back.
+GPU_MILLI_LAGS = [1, 4, 8, 16, 96]
 
 
 def build_multi_resource_table(
@@ -53,6 +57,13 @@ def build_multi_resource_table(
 def main() -> None:
     fact_df = pd.read_parquet(FACT_PATH)
     table = build_multi_resource_table(fact_df, WINDOW_START, WINDOW_END, BUCKET_SECONDS)
+
+    table = add_lag_features(table, "gpu_milli", GPU_MILLI_LAGS)
+
+    rows_before = len(table)
+    table = table.dropna().reset_index(drop=True)
+    rows_dropped = rows_before - len(table)
+    print(f"dropped {rows_dropped} rows with incomplete lag history (expected: {max(GPU_MILLI_LAGS)})")
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     table.to_parquet(OUTPUT_PATH, index=False)

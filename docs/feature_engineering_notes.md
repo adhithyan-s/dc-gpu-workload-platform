@@ -45,3 +45,23 @@ Visually (see the plotted demand curve), the shape is genuinely wavy - roughly 3
 - **Enough distinct rows** - 3,345 rows over 34.8 days is enough for a proper train/validation/test split and meaningful lag features, unlike 60-minute buckets (837 rows - thin) or 1-minute buckets (50,174 rows, but 99.3% similar to their neighbor - mostly redundant, not new information).
 
 This was a close call between 15 and 30 minutes; either is defensible. Revisit if the eventual model's error metrics suggest the granularity is wrong once we're actually training on it.
+
+## Lag feature selection
+
+Rather than including every possible lag (redundant - adjacent lags are nearly identical, and we only have 3,345 rows to begin with), 5 lags were chosen based on gpu_milli's actual measured autocorrelation:
+
+| lag | time back | autocorrelation |
+|-----|-----------|------------------|
+| 1   | 15 min    | 0.947            |
+| 2   | 30 min    | 0.922            |
+| 4   | 1 hour    | 0.891            |
+| 8   | 2 hours   | 0.846            |
+| 12  | 3 hours   | 0.811            |
+| 16  | 4 hours   | 0.784            |
+| 24  | 6 hours   | 0.737            |
+| 48  | 12 hours  | 0.624            |
+| 96  | 24 hours  | 0.592            |
+
+Correlation never fully collapses even at 24 hours back - evidence of a genuine multi-day trend in the data, not just short-term noise. Final choice: `lag_1`, `lag_4`, `lag_8`, `lag_16`, `lag_96` - spaced out to capture immediate momentum, short-term, and daily-scale signal without redundant near-duplicate columns.
+
+**Trade-off:** the largest lag (96) means the first 96 rows of the dataset can't have a complete feature set (there's no 24-hours-back data for them), so they're dropped - 96 of 3,345 rows (~2.9%), leaving 3,249 usable rows.
