@@ -16,6 +16,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ml.features.forecast_target import add_forecast_target
 from ml.features.lag_features import add_lag_features
 from ml.features.resample_usage import build_bucketed_series
 from ml.features.rolling_features import add_rolling_features
@@ -35,6 +36,9 @@ GPU_MILLI_LAGS = [1, 4, 8, 16, 96]
 
 # Matches the lag horizons for consistency: 1hr, 4hr, 24hr rolling windows.
 GPU_MILLI_ROLLING_WINDOWS = [4, 16, 96]
+
+# Predict 1 bucket (15min) ahead, to start simple.
+FORECAST_HORIZON = 1
 
 
 def build_multi_resource_table(
@@ -64,12 +68,14 @@ def main() -> None:
 
     table = add_lag_features(table, "gpu_milli", GPU_MILLI_LAGS)
     table = add_rolling_features(table, "gpu_milli", GPU_MILLI_ROLLING_WINDOWS)
+    table = add_forecast_target(table, "gpu_milli", FORECAST_HORIZON)
 
     rows_before = len(table)
     table = table.dropna().reset_index(drop=True)
     rows_dropped = rows_before - len(table)
     max_history_needed = max(max(GPU_MILLI_LAGS), max(GPU_MILLI_ROLLING_WINDOWS))
-    print(f"dropped {rows_dropped} rows with incomplete lag history (expected: {max_history_needed})\n\n")
+    expected_drop = max_history_needed + FORECAST_HORIZON
+    print(f"dropped {rows_dropped} rows with incomplete history/target (expected: {expected_drop})\n\n")
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     table.to_parquet(OUTPUT_PATH, index=False)
