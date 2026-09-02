@@ -61,7 +61,7 @@ Full architecture notes: see `docs/architecture.md`.
 - [x] Trace downloader script
 - [x] Replay producer (simulated streaming ingestion)
 - [x] Raw -> curated transforms
-- [ ] Feature engineering
+- [x] Feature engineering
 - [ ] Baseline forecasting model + MLflow tracking
 - [ ] Job-failure classification model (stretch)
 - [ ] Model serving (Lambda + API Gateway)
